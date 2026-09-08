@@ -63,7 +63,7 @@ Requirements: Xcode 16+, iOS 17+ deployment target.
 
 Two separate facts, stated separately:
 
-- **Builds for a Simulator by CI:** pending — this line is rewritten from the real result once the first run on `main` has reported.
+- **Builds for a Simulator by CI: yes.** The [Actions workflow](https://github.com/rajatslakhina/posture-continuity-demo-app/actions/workflows/ci.yml) runs on `macos-15`: `xcodebuild -resolvePackageDependencies -project Demo.xcodeproj` (proves the remote package resolves from GitHub against the `1.0.1` pin, not from any local checkout), prints the resolved `Package.resolved`, then `xcodebuild build -project Demo.xcodeproj -scheme Demo -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO`. The first run on `main` (commit `7abee27`) passed every step — resolve 26 s, build 33 s.
 - **Ran on a Simulator:** **no.** See *Screenshots* above for the verbatim refusal. Nothing in this repository has been observed running.
 
 Structural checks that did happen on this tree: `project.pbxproj` brace/paren balance (33/33, 24/24) and every referenced object id defined (22/22, no dangling refs); the shared scheme's blueprint id matches the `Demo` target; the package reference is an `XCRemoteSwiftPackageReference` at `https://github.com/rajatslakhina/posture-continuity-kit.git` with `upToNextMajorVersion` from `1.0.1` — no local path, no branch. `DemoApp.swift` and the demo view were traced by hand and by three independent review rounds against the library's `ContinuityCoordinator`; the round-3 finding (a doc claim that focus and a presented sheet could be restored simultaneously) was fixed and is documented above, but that final fix was not independently re-reviewed.
